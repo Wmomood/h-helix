@@ -28,7 +28,7 @@ If no file is provided, it will open Helix in the current directory.
 
 ## Requirements
 
-  - [helix editor](https://github.com/helix-editor/helix)
+  - [Helix Editor](https://github.com/helix-editor/helix)
 
 ## Configure sudoedit to use Helix
 

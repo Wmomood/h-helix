@@ -29,7 +29,7 @@ h <file_path>
 
 ## Configure sudoedit to use Helix
 
-When root access is needed, `sudoedit` will be used to open the file. If you want use Helix for sudoedit, you can try adding the following line to your shell configuration file (e.g., .bashrc, .zshrc, etc.):
+When root access is needed, `sudoedit` will be used to open the file. If you want use Helix for sudoedit, you can try adding the following line to your shell configuration file (e.g. .bashrc, .zshrc, etc.):
 ```bash
 export EDITOR="helix" # (or hx)
 export SUDO_EDITOR="helix" # (or hx)

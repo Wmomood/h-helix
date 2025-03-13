@@ -14,16 +14,13 @@ cd h-helix
 chmod +x install.sh
 ./install.sh
 ```
-Ensure that ~/.local/bin is included in your PATH environment variable. This is required for the h command to work properly.
+Ensure that ~/.local/bin is included in your PATH environment variable(If you use the default installation path). This is required for the h command to work properly.
 
 ## Usage
-
+Just like Helix:
 ```bash
 h <file_path>
-# or just "h" to open helix with no file opened
-h
-
-If no file is provided, it will open Helix in the current directory.
+# If no file is provided, Helix will launch Helix without opening a specific file.
 ```
 
 ## Requirements
@@ -32,9 +29,8 @@ If no file is provided, it will open Helix in the current directory.
 
 ## Configure sudoedit to use Helix
 
-This script requires `sudoedit` to be set up in order to use Helix as the editor for files that require root permissions. When root access is needed, `sudoedit` will be used to open the file in Helix. Please make sure you have configured `sudoedit` to use Helix by adding the following line to your shell configuration file (e.g., `.bashrc`, `.zshrc`, etc.):
-
+When root access is needed, `sudoedit` will be used to open the file. If you want use Helix for sudoedit, you can try adding the following line to your shell configuration file (e.g., .bashrc, .zshrc, etc.):
 ```bash
-export EDITOR="helix"
-export SUDO_EDITOR="helix"
+export EDITOR="helix" # (or hx)
+export SUDO_EDITOR="helix" # (or hx)
 ```

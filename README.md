@@ -20,6 +20,8 @@ Ensure that ~/.local/bin is included in your PATH environment variable. This is 
 
 ```bash
 h <file_path>
+# or just "h" to open helix with no file opened
+h
 
 If no file is provided, it will open Helix in the current directory.
 ```

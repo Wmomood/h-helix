@@ -1,18 +1,14 @@
 #!/bin/bash
 
-# Get the file or directory (can be empty)
 file="$1"
 
 # Function to check write permission
 needs_root() {
     if [ -z "$1" ]; then
-        # No file provided, check the current directory
         [ -w "$(pwd)" ] || return 0
     elif [ -e "$1" ]; then
-        # If the file exists, check if it's writable
         [ -w "$1" ] || return 0
     else
-        # If the file doesn't exist, check if the parent directory is writable
         [ -w "$(dirname "$1")" ] || return 0
     fi
     return 1
@@ -33,28 +29,37 @@ create_directory() {
 
 # Check if the file or directory exists
 if [ -n "$file" ] && [ ! -e "$file" ]; then
-    # If the target file or directory does not exist, ask to create the directory
     if [ ! -d "$(dirname "$file")" ]; then
         create_directory "$file"
     fi
 fi
 
+if [ -z "$file" ]; then
+    helix
+    exit 0
+fi
+
 if needs_root "$file"; then
-    if [ -z "$file" ]; then
-        helix
-    else
-        if [ -w "$(dirname "$file")" ]; then
-            echo "Warning: sudoedit cannot be used because $(dirname "$file") is writable."
-            echo "Opening with sudo instead."
-            sudo helix "$file"
+    tmpfile="$(mktemp --suffix=.hxedit)"
+    sudo cp "$file" "$tmpfile"
+    sudo chown "$USER" "$tmpfile"
+
+    helix "$tmpfile"
+
+    if ! diff -q "$file" "$tmpfile" > /dev/null; then
+        echo "Changes detected. Overwrite the original file? (y/N)"
+        read -r confirm
+        if [[ "$confirm" =~ ^[Yy]$ ]]; then
+            sudo mv "$tmpfile" "$file"
+            echo "File updated successfully."
         else
-            sudoedit "$file"
+            echo "Changes discarded."
+            rm "$tmpfile"
         fi
+    else
+        echo "No changes made."
+        rm "$tmpfile"
     fi
 else
-    if [ -z "$file" ]; then
-        helix
-    else
-        helix "$file"
-    fi
+    helix "$file"
 fi

@@ -39,27 +39,37 @@ if [ -z "$file" ]; then
     exit 0
 fi
 
+# If the file requires root privileges
 if needs_root "$file"; then
-    tmpfile="$(mktemp --suffix=.hxedit)"
-    sudo cp "$file" "$tmpfile"
-    sudo chown "$USER" "$tmpfile"
+    # Try to open the file using sudoedit
+    if sudoedit "$file"; then
+        echo "File edited successfully with sudoedit."
+    else
+        # If sudoedit fails, create a temporary file and use Helix
+        tmpfile="$(mktemp --suffix=.hxedit)"
+        sudo cp "$file" "$tmpfile"
+        sudo chown "$USER" "$tmpfile"  # Allow the current user to edit the file
 
-    helix "$tmpfile"
+        # Open the temporary file with Helix
+        helix "$tmpfile"
 
-    if ! diff -q "$file" "$tmpfile" > /dev/null; then
-        echo "Changes detected. Overwrite the original file? (y/N)"
-        read -r confirm
-        if [[ "$confirm" =~ ^[Yy]$ ]]; then
-            sudo mv "$tmpfile" "$file"
-            echo "File updated successfully."
+        # Check if changes were made
+        if ! diff -q "$file" "$tmpfile" > /dev/null; then
+            echo "Changes detected. Overwrite the original file? (y/N)"
+            read -r confirm
+            if [[ "$confirm" =~ ^[Yy]$ ]]; then
+                sudo mv "$tmpfile" "$file"
+                echo "File updated successfully."
+            else
+                echo "Changes discarded."
+                rm "$tmpfile"
+            fi
         else
-            echo "Changes discarded."
+            echo "No changes made."
             rm "$tmpfile"
         fi
-    else
-        echo "No changes made."
-        rm "$tmpfile"
     fi
 else
+    # For regular files, open Helix normally
     helix "$file"
 fi

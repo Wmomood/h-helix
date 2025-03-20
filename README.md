@@ -1,11 +1,12 @@
 # Helix Editor Script
-This script allows you to quickly open the Helix editor using the h command. It checks whether the provided file or directory exists and has proper write permissions. If the file or directory does not exist, it will prompt you to create it. The script also checks if you need root privileges to edit the file. If so, it creates a temporary copy of the file for editing and, after saving, prompts you to overwrite the original file if there were any changes.
+This script allows you to quickly open the Helix editor using the `h` command. It checks whether the provided file or directory exists and has proper write permissions. If the file or directory does not exist, it will prompt you to create it. The script also checks if root privileges are required to edit the file. If so, it attempts to use `sudoedit` to open the file. If `sudoedit` fails, a temporary copy of the file is created for editing. After saving, it prompts you to overwrite the original file if there were any changes.
 
 ## Features
 - Checks if the file exists and if it is writable.
 - If the directory of the file does not exist, it will prompt the user to create it.
-- If root privileges are required, it uses a temporary copy of the file for editing.
-- Prompts the user to overwrite the original file if changes are detected.
+- Opens files with `sudoedit` if root privileges are needed, preserving file ownership and permissions.
+- If `sudoedit` fails (due to writable directories), it creates a temporary file and opens it with Helix.
+- After editing, it prompts to overwrite the original file if changes were detected.
 ## Installation
 
 ```

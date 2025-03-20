@@ -39,20 +39,22 @@ if [ -n "$file" ] && [ ! -e "$file" ]; then
     fi
 fi
 
-# Check if root privileges are needed
 if needs_root "$file"; then
     if [ -z "$file" ]; then
-        # No file provided, open sudoedit in the current directory
-        sudoedit "$(pwd)/untitled"
+        helix
     else
-        sudoedit "$file"
+        if [ -w "$(dirname "$file")" ]; then
+            echo "Warning: sudoedit cannot be used because $(dirname "$file") is writable."
+            echo "Opening with sudo instead."
+            sudo helix "$file"
+        else
+            sudoedit "$file"
+        fi
     fi
 else
     if [ -z "$file" ]; then
-        # No file provided, just open helix in the current directory
         helix
     else
         helix "$file"
     fi
 fi
-
